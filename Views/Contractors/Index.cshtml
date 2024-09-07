@@ -1,0 +1,29 @@
+﻿@model List<PROG6212_MVC.Models.Contractor>
+
+@{
+    ViewBag.Title = "Contractors";
+}
+
+<h2>Contractors</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Contractor ID</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Project</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contractor in Model)
+        {
+            <tr>
+                <td>@contractor.ContractorId</td>
+                <td>@contractor.Name</td>
+                <td>@contractor.Contact</td>
+                <td>@contractor.Project</td>
+            </tr>
+        }
+    </tbody>
+</table>

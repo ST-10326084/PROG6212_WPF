@@ -1,0 +1,33 @@
+﻿@model List<PROG6212_MVC.Models.Claim>
+
+@{
+    ViewBag.Title = "Claims";
+}
+
+<h2>Claims</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Claim ID</th>
+            <th>Contractor</th>
+            <th>Project</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Submission Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var claim in Model)
+        {
+            <tr>
+                <td>@claim.ClaimId</td>
+                <td>@claim.Contractor</td>
+                <td>@claim.Project</td>
+                <td>@claim.Amount</td>
+                <td>@claim.Status</td>
+                <td>@claim.SubmissionDate</td>
+            </tr>
+        }
+    </tbody>
+</table>

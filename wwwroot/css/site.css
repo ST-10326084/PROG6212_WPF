@@ -1,0 +1,142 @@
+/* General Styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #007BFF;
+    border-radius: 0;
+    border: none;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: white;
+    padding: 15px 20px;
+}
+
+    .navbar-default .navbar-nav > li > a:hover {
+        background-color: #0056b3;
+    }
+
+/* Table Styling */
+.table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+    .table th, .table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background-color: #007BFF;
+        color: white;
+        text-align: left;
+    }
+
+    .table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+/* Button Styling */
+.btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    background-color: #28a745;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #218838;
+    }
+
+/* Dashboard Box Styling */
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+
+.dashboard-box {
+    background-color: white;
+    border-radius: 10px;
+    width: 30%; /* Each box takes 30% of the container width */
+    min-width: 250px; /* Ensure the boxes do not shrink too much */
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    transition: transform 0.2s ease-in-out;
+}
+
+    .dashboard-box:hover {
+        transform: translateY(-5px); /* Slight lift on hover */
+    }
+
+    .dashboard-box h3 {
+        font-size: 24px;
+        color: #007BFF;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-box p {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .dashboard-box a {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+        .dashboard-box a:hover {
+            background-color: #0056b3;
+        }
+
+/* Form Input Styles */
+input, select {
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+    input[type="submit"] {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+    }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
