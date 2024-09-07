@@ -8,21 +8,88 @@
     <!-- Pending Claims Box -->
     <div class="dashboard-box">
         <h3>Pending Claims</h3>
-        <p>10 claims pending approval</p>
-        <a href="#">View Details</a>
+        <p><strong>Total:</strong> 10 claims pending approval</p>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'PendingDetails')">Details</button>
+            <button class="tablinks" onclick="openTab(event, 'PendingSummary')">Summary</button>
+        </div>
+        <!-- Tab Content for Pending Claims -->
+        <div id="PendingDetails" class="tabcontent">
+            <h4>Pending Claims Details</h4>
+            <ul>
+                <!-- Example list of pending claims -->
+                <li>Claim ID: 1 - Description: Claim for service A - Amount: $100</li>
+                <li>Claim ID: 2 - Description: Claim for service B - Amount: $150</li>
+                <!-- Add more claims as needed -->
+            </ul>
+        </div>
+        <div id="PendingSummary" class="tabcontent" style="display:none;">
+            <h4>Pending Claims Summary</h4>
+            <p>Summary of pending claims...</p>
+        </div>
     </div>
 
     <!-- Approved Claims Box -->
     <div class="dashboard-box">
         <h3>Approved Claims</h3>
-        <p>5 claims approved</p>
-        <a href="#">View Details</a>
+        <p><strong>Total:</strong> 5 claims approved</p>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'ApprovedDetails')">Details</button>
+            <button class="tablinks" onclick="openTab(event, 'ApprovedSummary')">Summary</button>
+        </div>
+        <!-- Tab Content for Approved Claims -->
+        <div id="ApprovedDetails" class="tabcontent">
+            <h4>Approved Claims Details</h4>
+            <ul>
+                <!-- Example list of approved claims -->
+                <li>Claim ID: 3 - Description: Claim for service C - Amount: $200</li>
+                <li>Claim ID: 4 - Description: Claim for service D - Amount: $250</li>
+                <!-- Add more claims as needed -->
+            </ul>
+        </div>
+        <div id="ApprovedSummary" class="tabcontent" style="display:none;">
+            <h4>Approved Claims Summary</h4>
+            <p>Summary of approved claims...</p>
+        </div>
     </div>
 
     <!-- Rejected Claims Box -->
     <div class="dashboard-box">
         <h3>Rejected Claims</h3>
-        <p>3 claims rejected</p>
-        <a href="#">View Details</a>
+        <p><strong>Total:</strong> 3 claims rejected</p>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'RejectedDetails')">Details</button>
+            <button class="tablinks" onclick="openTab(event, 'RejectedSummary')">Summary</button>
+        </div>
+        <!-- Tab Content for Rejected Claims -->
+        <div id="RejectedDetails" class="tabcontent">
+            <h4>Rejected Claims Details</h4>
+            <ul>
+                <!-- Example list of rejected claims -->
+                <li>Claim ID: 5 - Description: Claim for service E - Amount: $300</li>
+                <li>Claim ID: 6 - Description: Claim for service F - Amount: $350</li>
+                <!-- Add more claims as needed -->
+            </ul>
+        </div>
+        <div id="RejectedSummary" class="tabcontent" style="display:none;">
+            <h4>Rejected Claims Summary</h4>
+            <p>Summary of rejected claims...</p>
+        </div>
     </div>
 </div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
