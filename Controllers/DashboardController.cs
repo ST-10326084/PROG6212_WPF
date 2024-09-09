@@ -4,7 +4,7 @@ namespace PROG6212_MVC.Controllers
 {
     public class DashboardController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
             // Hard-coded values for demo purposes
             var dashboardData = new
