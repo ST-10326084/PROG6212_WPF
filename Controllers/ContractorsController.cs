@@ -5,7 +5,7 @@ namespace PROG6212_MVC.Controllers
 {
     public class ContractorsController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Contractors()
         {
             // Fetch the list of contractors.
             var contractors = GetContractors();

@@ -5,7 +5,7 @@ namespace PROG6212_MVC.Controllers
 {
     public class ClaimsController : Controller
     {
-        public ActionResult Index()
+        public ActionResult Claims()
         {
             // Fetch the list of claims.
             var claims = GetClaims();
