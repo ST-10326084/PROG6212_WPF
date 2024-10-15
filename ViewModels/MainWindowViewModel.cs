@@ -6,6 +6,11 @@ using PROG6212_WPF.Commands;
 namespace PROG6212_WPF.ViewModels
 {
 
+    using System.ComponentModel;
+    using System.Windows.Input;
+    using CLVD6212_WPF.Views;
+    using PROG6212_WPF.Views; // Add this using statement to access views
+
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public ICommand NavigateCommand { get; }
@@ -24,7 +29,7 @@ namespace PROG6212_WPF.ViewModels
         public MainWindowViewModel()
         {
             NavigateCommand = new RelayCommand(Navigate);
-            CurrentView = new DashboardViewModel(); // Set default view
+            CurrentView = new DashboardView(); // Set default view
         }
 
         private void Navigate(object parameter)
@@ -32,13 +37,13 @@ namespace PROG6212_WPF.ViewModels
             switch (parameter.ToString())
             {
                 case "DashboardView":
-                    CurrentView = new DashboardViewModel();
+                    CurrentView = new DashboardView(); // Instantiate UserControl
                     break;
                 case "SubmitClaimView":
-                    CurrentView = new SubmitClaimViewModel();
+                    CurrentView = new SubmitClaimView(); // Instantiate UserControl
                     break;
                 case "VerifyClaimsView":
-                    CurrentView = new VerifyClaimsViewModel();
+                    CurrentView = new VerifyClaimsView(); // Instantiate UserControl
                     break;
             }
         }
@@ -46,6 +51,7 @@ namespace PROG6212_WPF.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+
 
 }
 
