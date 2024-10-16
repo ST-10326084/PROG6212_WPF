@@ -4,10 +4,11 @@
     <StackPanel>
         <TextBlock Text="Dashboard Overview" FontSize="20" FontWeight="Bold" Margin="10" />
 
-        <!-- Pending Claims  -->
+        <!-- Pending Claims -->
         <GroupBox Header="Pending Claims" Margin="10">
             <StackPanel>
-                <TextBlock Text="Total: 10 claims pending approval" FontWeight="Bold" />
+                <!-- Bind the PendingClaimsCount property -->
+                <TextBlock Text="{Binding PendingClaimsCount, StringFormat='Total: {0} claims pending approval'}" FontWeight="Bold" />
                 <Button Content="View Details" Width="120" Margin="5" Command="{Binding ViewPendingDetailsCommand}" />
             </StackPanel>
         </GroupBox>
@@ -15,7 +16,8 @@
         <!-- Approved Claims -->
         <GroupBox Header="Approved Claims" Margin="10">
             <StackPanel>
-                <TextBlock Text="Total: 5 claims approved" FontWeight="Bold" />
+                <!-- Bind the ApprovedClaimsCount property -->
+                <TextBlock Text="{Binding ApprovedClaimsCount, StringFormat='Total: {0} claims approved'}" FontWeight="Bold" />
                 <Button Content="View Details" Width="120" Margin="5" Command="{Binding ViewApprovedDetailsCommand}" />
             </StackPanel>
         </GroupBox>
@@ -23,7 +25,8 @@
         <!-- Rejected Claims -->
         <GroupBox Header="Rejected Claims" Margin="10">
             <StackPanel>
-                <TextBlock Text="Total: 3 claims rejected" FontWeight="Bold" />
+                <!-- Bind the RejectedClaimsCount property -->
+                <TextBlock Text="{Binding RejectedClaimsCount, StringFormat='Total: {0} claims rejected'}" FontWeight="Bold" />
                 <Button Content="View Details" Width="120" Margin="5" Command="{Binding ViewRejectedDetailsCommand}" />
             </StackPanel>
         </GroupBox>

@@ -1,13 +1,15 @@
-﻿using System.Windows.Input;
+﻿using System;
 using System.ComponentModel;
-using PROG6212_WPF.Commands;
+using System.IO;
 using System.Windows;
+using System.Windows.Input;
+using PROG6212_WPF.Commands;
 
 namespace PROG6212_WPF.ViewModels
 {
     public class DashboardViewModel : INotifyPropertyChanged
     {
-        // Properties for the total counts
+        public string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
         private int _pendingClaimsCount;
         private int _approvedClaimsCount;
         private int _rejectedClaimsCount;
@@ -49,40 +51,86 @@ namespace PROG6212_WPF.ViewModels
 
         public DashboardViewModel()
         {
-            // Initialize counts
-            PendingClaimsCount = 10; // Replace with actual data retrieval logic
-            ApprovedClaimsCount = 5;  // Replace with actual data retrieval logic
-            RejectedClaimsCount = 3;   // Replace with actual data retrieval logic
+            
 
-            // Set up commands
-            ViewPendingDetailsCommand = new RelayCommand(ViewPendingDetails);
-            ViewApprovedDetailsCommand = new RelayCommand(ViewApprovedDetails);
-            ViewRejectedDetailsCommand = new RelayCommand(ViewRejectedDetails);
+            // Load claim counts from the file
+            LoadDataFromFile(filePath);
+
+            
+
         }
+
+        private void LoadDataFromFile(string filePath)
+        {
+            try
+            {
+                if (File.Exists(filePath))
+                {
+                    var lines = File.ReadAllLines(filePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split(':');
+                        if (parts.Length == 2)
+                        {
+                            var key = parts[0];
+                            if (int.TryParse(parts[1], out int value))
+                            {
+                                switch (key)
+                                {
+                                    case "PendingClaims":
+                                        PendingClaimsCount = value;
+                                        break;
+                                    case "ApprovedClaims":
+                                        ApprovedClaimsCount = value;
+                                        break;
+                                    case "RejectedClaims":
+                                        RejectedClaimsCount = value;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show($"Invalid data format for {key}: {parts[1]}");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Set default values when the file is not found
+                    MessageBox.Show("Claims data file not found. Default values will be used.");
+                    PendingClaimsCount = 0;
+                    ApprovedClaimsCount = 0;
+                    RejectedClaimsCount = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading data from file: {ex.Message}");
+                // Set default values in case of an error
+                PendingClaimsCount = 0;
+                ApprovedClaimsCount = 0;
+                RejectedClaimsCount = 0;
+            }
+        }
+
 
         // Command methods
         private void ViewPendingDetails(object parameter)
         {
-            // Logic for viewing pending claims details
-            // You can implement navigation or other actions here
             MessageBox.Show("Viewing Pending Claims Details");
         }
 
         private void ViewApprovedDetails(object parameter)
         {
-            // Logic for viewing approved claims details
-            // You can implement navigation or other actions here
             MessageBox.Show("Viewing Approved Claims Details");
         }
 
         private void ViewRejectedDetails(object parameter)
         {
-            // Logic for viewing rejected claims details
-            // You can implement navigation or other actions here
             MessageBox.Show("Viewing Rejected Claims Details");
         }
 
-        // INotifyPropertyChanged implementation
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
