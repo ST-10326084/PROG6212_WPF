@@ -14,11 +14,12 @@
                     <GridViewColumn Header="Hours Worked" DisplayMemberBinding="{Binding HoursWorked}" Width="100"/>
                     <GridViewColumn Header="Hourly Rate" DisplayMemberBinding="{Binding HourlyRate}" Width="100"/>
                     <GridViewColumn Header="Additional Notes" DisplayMemberBinding="{Binding AdditionalNotes}" Width="150"/>
+                    <GridViewColumn Header="Document Path" DisplayMemberBinding="{Binding _documentPath}" Width="100"/>
                     <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="100"/>
                 </GridView>
             </ListView.View>
         </ListView>
-
+      
         <!-- Approve and Reject Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <Button Content="Approve" Width="120" Margin="5" Command="{Binding ApproveClaimCommand}"/>

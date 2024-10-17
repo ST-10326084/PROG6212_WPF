@@ -73,12 +73,13 @@ namespace PROG6212_WPF.ViewModels
             // Save claim to the text file with status as "Pending"
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
             int newId = GetNextClaimId(filePath); // Get new ID for the claim
-            string status = string.IsNullOrEmpty(DocumentPath) ? "Pending" : DocumentPath;
+
+            //string status = string.IsNullOrEmpty(DocumentPath) ? "Pending" : DocumentPath;
 
             // Append new claim data to the file
             using (StreamWriter sw = File.AppendText(filePath))
             {
-                sw.WriteLine($"{newId},{HoursWorked},{HourlyRate},{AdditionalNotes},{status}");
+                sw.WriteLine($"{newId},{HoursWorked},{HourlyRate},{AdditionalNotes},{DocumentPath},{"Pending"}");
             }
 
             // Reset fields after submission

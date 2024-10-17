@@ -76,9 +76,9 @@ namespace PROG6212_WPF.ViewModels
                             continue; // Skip empty or comment lines
 
                         var parts = line.Split(',');
-                        if (parts.Length >= 5) // Ensure there are enough parts
+                        if (parts.Length >= 6) // Ensure there are enough parts
                         {
-                            var status = parts[4].Trim(); // Get the status part
+                            var status = parts[5].Trim(); // Get the status part
                             switch (status)
                             {
                                 case "":

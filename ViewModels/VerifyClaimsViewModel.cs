@@ -15,6 +15,7 @@ namespace PROG6212_WPF.ViewModels
         public decimal HourlyRate { get; set; }
         public string AdditionalNotes { get; set; }
         public string Status { get; set; }
+        public string _documentPath { get; set; }
     }
 
     public class VerifyClaimsViewModel : INotifyPropertyChanged
@@ -80,7 +81,7 @@ namespace PROG6212_WPF.ViewModels
                             continue; // Ignore empty lines
 
                         var parts = line.Split(',');
-                        if (parts.Length == 5) // Ensure it has 5 parts: ID, HoursWorked, HourlyRate, AdditionalNotes, Status
+                        if (parts.Length == 6) // Ensure it has 5 parts: ID, HoursWorked, HourlyRate, AdditionalNotes, Status
                         {
                             var newClaim = new Claim
                             {
@@ -88,7 +89,8 @@ namespace PROG6212_WPF.ViewModels
                                 HoursWorked = int.Parse(parts[1]),
                                 HourlyRate = decimal.Parse(parts[2]),
                                 AdditionalNotes = parts[3],
-                                Status = string.IsNullOrWhiteSpace(parts[4]) ? "Pending" : parts[4].Trim(),
+                                _documentPath = parts[4],
+                                Status = string.IsNullOrWhiteSpace(parts[5]) ? "Pending" : parts[5].Trim(),
                                 // Assuming SubmissionDate isn't needed at this point
                             };
                             PendingClaims.Add(newClaim);
@@ -135,9 +137,9 @@ namespace PROG6212_WPF.ViewModels
                         continue;
 
                     var parts = lines[i].Split(',');
-                    if (parts.Length >= 5 && parts[0] == claim.ClaimId.ToString()) // Adjusted for 5 parts
+                    if (parts.Length >= 6 && parts[0] == claim.ClaimId.ToString()) // Adjusted for 6 parts
                     {
-                        lines[i] = $"{parts[0]},{parts[1]},{parts[2]},{parts[3]},{claim.Status}"; // Update status
+                        lines[i] = $"{parts[0]},{parts[1]},{parts[2]},{parts[3]},{parts[4]},{claim.Status}"; // Update status
                         break;
                     }
                 }
