@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using PROG6212_WPF.Commands;
-using System.IO;
 
 namespace PROG6212_WPF.ViewModels
 {
     public class Claim
     {
         public int ClaimId { get; set; }
-        public string Contractor { get; set; }
-        public string Project { get; set; }
-        public decimal Amount { get; set; }
+        public int HoursWorked { get; set; }
+        public decimal HourlyRate { get; set; }
+        public string AdditionalNotes { get; set; }
         public string Status { get; set; }
-        public DateTime SubmissionDate { get; set; }
     }
 
     public class VerifyClaimsViewModel : INotifyPropertyChanged
@@ -29,7 +29,14 @@ namespace PROG6212_WPF.ViewModels
             {
                 _selectedClaim = value;
                 OnPropertyChanged(nameof(SelectedClaim));
-                CommandManager.InvalidateRequerySuggested(); // Notify buttons to check if they can execute
+                CommandManager.InvalidateRequerySuggested();
+
+                // Display all relevant information for the selected claim
+                System.Diagnostics.Debug.WriteLine($"SelectedClaim changed: ID={_selectedClaim?.ClaimId}, Hours={_selectedClaim?.HoursWorked}, Rate={_selectedClaim?.HourlyRate}, Notes={_selectedClaim?.AdditionalNotes}, Status={_selectedClaim?.Status}");
+
+                // Update button states
+                ((RelayCommand)ApproveClaimCommand).RaiseCanExecuteChanged();
+                ((RelayCommand)RejectClaimCommand).RaiseCanExecuteChanged();
             }
         }
 
@@ -47,47 +54,56 @@ namespace PROG6212_WPF.ViewModels
 
         private void LoadPendingClaims()
         {
-            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
 
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
+                bool isClaimsSection = false; // Track whether we are in the claims section
+
                 foreach (var line in lines)
                 {
-                    if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line) || line.StartsWith("PendingClaims:") || line.StartsWith("ApprovedClaims:") || line.StartsWith("RejectedClaims:"))
+                    if (line.StartsWith("#")) // Ignore comment lines
                         continue;
 
-                    var parts = line.Split(',');
-                    if (parts.Length == 3) // Updated to check for 3 parts
+                    if (line.StartsWith("ID,")) // Identify the start of the claims section
                     {
-                        if (decimal.TryParse(parts[0], out decimal hoursWorked) && decimal.TryParse(parts[1], out decimal hourlyRate))
+                        isClaimsSection = true;
+                        continue;
+                    }
+
+                    if (isClaimsSection)
+                    {
+                        if (string.IsNullOrWhiteSpace(line))
+                            continue; // Ignore empty lines
+
+                        var parts = line.Split(',');
+                        if (parts.Length == 5) // Ensure it has 5 parts: ID, HoursWorked, HourlyRate, AdditionalNotes, Status
                         {
                             var newClaim = new Claim
                             {
-                                ClaimId = PendingClaims.Count + 1,
-                                Contractor = "yes", // parts[2], // Get Contractor from input
-                                Project = "yes",      // parts[3],    // Get Project from input
-                                Amount = hoursWorked * hourlyRate,
-                                Status = "Pending",
-                                SubmissionDate = DateTime.Now
+                                ClaimId = int.Parse(parts[0]),
+                                HoursWorked = int.Parse(parts[1]),
+                                HourlyRate = decimal.Parse(parts[2]),
+                                AdditionalNotes = parts[3],
+                                Status = string.IsNullOrWhiteSpace(parts[4]) ? "Pending" : parts[4].Trim(),
+                                // Assuming SubmissionDate isn't needed at this point
                             };
                             PendingClaims.Add(newClaim);
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Invalid claim data: {line}");
                         }
                     }
                 }
             }
         }
 
+
         private void ApproveClaim(object parameter)
         {
             if (SelectedClaim != null)
             {
                 SelectedClaim.Status = "Approved";
-                UpdateDashboardCounts(1, 0); // Update approved claims count
+                System.Diagnostics.Debug.WriteLine($"Claim {SelectedClaim.ClaimId} approved.");
+                UpdateClaimStatusInFile(SelectedClaim); // Update the status in the file
                 OnPropertyChanged(nameof(PendingClaims));
             }
         }
@@ -97,28 +113,28 @@ namespace PROG6212_WPF.ViewModels
             if (SelectedClaim != null)
             {
                 SelectedClaim.Status = "Rejected";
-                UpdateDashboardCounts(0, 1); // Update rejected claims count
+                System.Diagnostics.Debug.WriteLine($"Claim {SelectedClaim.ClaimId} rejected.");
+                UpdateClaimStatusInFile(SelectedClaim); // Update the status in the file
                 OnPropertyChanged(nameof(PendingClaims));
             }
         }
 
-        private void UpdateDashboardCounts(int approvedIncrement, int rejectedIncrement)
+        private void UpdateClaimStatusInFile(Claim claim)
         {
-            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath).ToList();
                 for (int i = 0; i < lines.Count; i++)
                 {
-                    if (lines[i].StartsWith("ApprovedClaims:"))
+                    if (lines[i].StartsWith("#") || string.IsNullOrWhiteSpace(lines[i]))
+                        continue;
+
+                    var parts = lines[i].Split(',');
+                    if (parts.Length >= 5 && parts[0] == claim.ClaimId.ToString()) // Adjusted for 5 parts
                     {
-                        int currentCount = int.Parse(lines[i].Split(':')[1].Trim());
-                        lines[i] = $"ApprovedClaims: {currentCount + approvedIncrement}";
-                    }
-                    else if (lines[i].StartsWith("RejectedClaims:"))
-                    {
-                        int currentCount = int.Parse(lines[i].Split(':')[1].Trim());
-                        lines[i] = $"RejectedClaims: {currentCount + rejectedIncrement}";
+                        lines[i] = $"{parts[0]},{parts[1]},{parts[2]},{parts[3]},{claim.Status}"; // Update status
+                        break;
                     }
                 }
                 File.WriteAllLines(filePath, lines);

@@ -45,6 +45,9 @@ namespace PROG6212_WPF.ViewModels
                 case "VerifyClaimsView":
                     CurrentView = new VerifyClaimsView(); // Instantiate UserControl
                     break;
+                case "test":
+                    CurrentView = new test(); // Instantiate UserControl
+                    break;
             }
         }
 

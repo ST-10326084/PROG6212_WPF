@@ -10,6 +10,8 @@
                 <Button Content="Dashboard" Width="100" Command="{Binding NavigateCommand}" CommandParameter="DashboardView"/>
                 <Button Content="Submit Claim" Width="100" Command="{Binding NavigateCommand}" CommandParameter="SubmitClaimView"/>
                 <Button Content="Verify Claims" Width="100" Command="{Binding NavigateCommand}" CommandParameter="VerifyClaimsView"/>
+               
+
             </StackPanel>
 
             <!-- ContentControl to Display Different Views -->
