@@ -1,7 +1,7 @@
 ﻿using PROG6212_WPF.ViewModels;
 using System.Windows.Controls;
 
-namespace CLVD6212_WPF.Views
+namespace PROG6212_WPF.Views
 {
     public partial class DashboardView : UserControl
     {

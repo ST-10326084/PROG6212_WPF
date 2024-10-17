@@ -1,16 +1,10 @@
-﻿using PROG6212_WPF.ViewModels;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows.Input;
 using PROG6212_WPF.Commands;
+using PROG6212_WPF.Views;
 
 namespace PROG6212_WPF.ViewModels
 {
-
-    using System.ComponentModel;
-    using System.Windows.Input;
-    using CLVD6212_WPF.Views;
-    using PROG6212_WPF.Views; // Add this using statement to access views
-
     public class MainWindowViewModel : INotifyPropertyChanged
     {
         public ICommand NavigateCommand { get; }
@@ -44,10 +38,7 @@ namespace PROG6212_WPF.ViewModels
                     break;
                 case "VerifyClaimsView":
                     CurrentView = new VerifyClaimsView(); // Instantiate UserControl
-                    break;
-                case "test":
-                    CurrentView = new test(); // Instantiate UserControl
-                    break;
+                    break;             
             }
         }
 

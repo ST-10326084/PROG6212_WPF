@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using PROG6212_WPF.ViewModels; // Ensure correct using directive
+using PROG6212_WPF.ViewModels;
 
-namespace PROG6212_WPF // Ensure correct namespace matches XAML
+namespace PROG6212_WPF
 {
     public partial class MainWindow : Window
     {

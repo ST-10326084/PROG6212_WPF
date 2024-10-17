@@ -51,13 +51,8 @@ namespace PROG6212_WPF.ViewModels
 
         public DashboardViewModel()
         {
-            
-
             // Load claim counts from the file
             LoadDataFromFile(filePath);
-
-            
-
         }
 
         private void LoadDataFromFile(string filePath)
@@ -113,7 +108,6 @@ namespace PROG6212_WPF.ViewModels
                 RejectedClaimsCount = 0;
             }
         }
-
 
         // Command methods
         private void ViewPendingDetails(object parameter)
