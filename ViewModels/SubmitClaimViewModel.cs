@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32; // Include this for file dialog
 using PROG6212_WPF.Commands;
 
 namespace PROG6212_WPF.ViewModels
@@ -11,6 +13,7 @@ namespace PROG6212_WPF.ViewModels
         private int _hoursWorked;
         private decimal _hourlyRate;
         private string _additionalNotes;
+        private string _documentPath;
 
         public int HoursWorked
         {
@@ -42,88 +45,73 @@ namespace PROG6212_WPF.ViewModels
             }
         }
 
+        public string DocumentPath
+        {
+            get => _documentPath;
+            set
+            {
+                _documentPath = value;
+                OnPropertyChanged(nameof(DocumentPath));
+            }
+        }
+
         public ICommand SubmitClaimCommand { get; }
+        public ICommand UploadDocumentCommand { get; }
 
         public SubmitClaimViewModel()
         {
             SubmitClaimCommand = new RelayCommand(SubmitClaim);
+            UploadDocumentCommand = new RelayCommand(UploadDocument);
         }
 
         private void SubmitClaim(object parameter)
         {
             // Logic to submit the claim
             decimal totalAmount = HoursWorked * HourlyRate;
-            MessageBox.Show($"Claim submitted with Total Amount: {totalAmount}. Notes: {AdditionalNotes}");
+            MessageBox.Show($"Claim submitted with Total Amount: {totalAmount:C}. Notes: {AdditionalNotes}");
 
-            // Save claim to the text file
-            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+            // Save claim to the text file with status as "Pending"
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+            int newId = GetNextClaimId(filePath); // Get new ID for the claim
+            string status = string.IsNullOrEmpty(DocumentPath) ? "Pending" : DocumentPath;
+
+            // Append new claim data to the file
             using (StreamWriter sw = File.AppendText(filePath))
             {
-                sw.WriteLine($"{HoursWorked},{HourlyRate},{AdditionalNotes}");
+                sw.WriteLine($"{newId},{HoursWorked},{HourlyRate},{AdditionalNotes},{status}");
             }
 
-            // Update the pending claims count
-            UpdatePendingClaimsCount();
-
-            // Optionally, reset the fields after submission
+            // Reset fields after submission
             HoursWorked = 0;
             HourlyRate = 0;
             AdditionalNotes = string.Empty;
+            DocumentPath = string.Empty; // Reset document path
         }
 
-
-
-        private void UpdatePendingClaimsCount()
+        private int GetNextClaimId(string filePath)
         {
-            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
-
             if (File.Exists(filePath))
             {
-                var lines = File.ReadAllLines(filePath).ToList();
-                int pendingClaimsCount = 0;
-                int approvedClaimsCount = 0;
-                int rejectedClaimsCount = 0;
+                var lines = File.ReadAllLines(filePath);
+                var submittedClaims = lines.SkipWhile(line => !line.StartsWith("# Submitted Claims")).Skip(1);
+                var lastId = submittedClaims.LastOrDefault()?.Split(',')[0];
 
-                // Read existing counts
-                foreach (var line in lines)
-                {
-                    if (line.StartsWith("PendingClaims:"))
-                    {
-                        int.TryParse(line.Split(':')[1].Trim(), out pendingClaimsCount);
-                    }
-                    else if (line.StartsWith("ApprovedClaims:"))
-                    {
-                        int.TryParse(line.Split(':')[1].Trim(), out approvedClaimsCount);
-                    }
-                    else if (line.StartsWith("RejectedClaims:"))
-                    {
-                        int.TryParse(line.Split(':')[1].Trim(), out rejectedClaimsCount);
-                    }
-                }
-
-                // Increment pending claims count for each new submission
-                pendingClaimsCount++;
-
-                // Prepare new lines to write back to the file
-                lines[lines.IndexOf(lines.First(line => line.StartsWith("PendingClaims:")))] = $"PendingClaims: {pendingClaimsCount}";
-
-                // Write updated counts and existing claims back to the file
-                File.WriteAllLines(filePath, lines);
+                return lastId == null ? 1 : int.Parse(lastId) + 1;
             }
-            else
-            {
-                // If the file does not exist, create it with default counts
-                File.WriteAllLines(filePath, new string[]
-                {
-                    "PendingClaims: 1",
-                    "ApprovedClaims: 0",
-                    "RejectedClaims: 0",
-                    "", // Empty line for separation
-                });
-            }
+            return 1; // Return 1 if no file exists
         }
 
-
+        private void UploadDocument(object parameter)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Documents|*.pdf;*.doc;*.docx|All Files|*.*" // Set file types
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                DocumentPath = openFileDialog.FileName; // Save the path of the selected document
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

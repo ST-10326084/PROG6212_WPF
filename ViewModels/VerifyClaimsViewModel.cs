@@ -54,6 +54,8 @@ namespace PROG6212_WPF.ViewModels
 
         private void LoadPendingClaims()
         {
+            PendingClaims.Clear(); // Clear the existing claims
+
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
 
             if (File.Exists(filePath))
@@ -105,6 +107,7 @@ namespace PROG6212_WPF.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Claim {SelectedClaim.ClaimId} approved.");
                 UpdateClaimStatusInFile(SelectedClaim); // Update the status in the file
                 OnPropertyChanged(nameof(PendingClaims));
+                LoadPendingClaims();
             }
         }
 
@@ -116,6 +119,7 @@ namespace PROG6212_WPF.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Claim {SelectedClaim.ClaimId} rejected.");
                 UpdateClaimStatusInFile(SelectedClaim); // Update the status in the file
                 OnPropertyChanged(nameof(PendingClaims));
+                LoadPendingClaims();
             }
         }
 

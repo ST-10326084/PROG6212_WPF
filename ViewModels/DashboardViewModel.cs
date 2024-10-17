@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using PROG6212_WPF.Commands;
@@ -9,7 +10,7 @@ namespace PROG6212_WPF.ViewModels
 {
     public class DashboardViewModel : INotifyPropertyChanged
     {
-        public string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+        public string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
         private int _pendingClaimsCount;
         private int _approvedClaimsCount;
         private int _rejectedClaimsCount;
@@ -62,30 +63,36 @@ namespace PROG6212_WPF.ViewModels
                 if (File.Exists(filePath))
                 {
                     var lines = File.ReadAllLines(filePath);
+
+                    // Reset counts
+                    PendingClaimsCount = 0;
+                    ApprovedClaimsCount = 0;
+                    RejectedClaimsCount = 0;
+
+                    // Iterate through each line in the file
                     foreach (var line in lines)
                     {
-                        var parts = line.Split(':');
-                        if (parts.Length == 2)
+                        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                            continue; // Skip empty or comment lines
+
+                        var parts = line.Split(',');
+                        if (parts.Length >= 5) // Ensure there are enough parts
                         {
-                            var key = parts[0];
-                            if (int.TryParse(parts[1], out int value))
+                            var status = parts[4].Trim(); // Get the status part
+                            switch (status)
                             {
-                                switch (key)
-                                {
-                                    case "PendingClaims":
-                                        PendingClaimsCount = value;
-                                        break;
-                                    case "ApprovedClaims":
-                                        ApprovedClaimsCount = value;
-                                        break;
-                                    case "RejectedClaims":
-                                        RejectedClaimsCount = value;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show($"Invalid data format for {key}: {parts[1]}");
+                                case "":
+                                    PendingClaimsCount++;
+                                    break;
+                                case "Pending":
+                                    PendingClaimsCount++;
+                                    break;
+                                case "Approved":
+                                    ApprovedClaimsCount++;
+                                    break;
+                                case "Rejected":
+                                    RejectedClaimsCount++;
+                                    break;
                             }
                         }
                     }
