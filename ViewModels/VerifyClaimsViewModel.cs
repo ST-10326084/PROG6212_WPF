@@ -99,7 +99,7 @@ namespace PROG6212_WPF.ViewModels
                 }
             }
         }
-
+       
 
         private void ApproveClaim(object parameter)
         {

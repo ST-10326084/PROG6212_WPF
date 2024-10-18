@@ -15,6 +15,9 @@ namespace PROG6212_WPF.ViewModels
         private string _additionalNotes;
         private string _documentPath;
 
+        // for unit testing
+        public decimal totalAmount { get; private set; } 
+
         public int HoursWorked
         {
             get => _hoursWorked;
@@ -64,10 +67,11 @@ namespace PROG6212_WPF.ViewModels
             UploadDocumentCommand = new RelayCommand(UploadDocument);
         }
 
-        private void SubmitClaim(object parameter)
+        public void SubmitClaim(object parameter)
         {
             // Logic to submit the claim
-            decimal totalAmount = HoursWorked * HourlyRate;
+            totalAmount = HoursWorked * HourlyRate;
+
             MessageBox.Show($"Claim submitted with Total Amount: {totalAmount:C}. Notes: {AdditionalNotes}");
 
             // Save claim to the text file with status as "Pending"
@@ -89,7 +93,7 @@ namespace PROG6212_WPF.ViewModels
             DocumentPath = string.Empty; // Reset document path
         }
 
-        private int GetNextClaimId(string filePath)
+        public int GetNextClaimId(string filePath)
         {
             if (File.Exists(filePath))
             {
