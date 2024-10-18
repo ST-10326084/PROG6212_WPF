@@ -1,17 +1,18 @@
 ﻿<Window x:Class="PROG6212_WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Contract Monthly Claim System" Height="600" Width="1000">
-
+        Title="Contract Monthly Claim System" Height="600" Width="1000" 
+        Background="#F7F9FB" FontFamily="Segoe UI" FontSize="14">
     <Grid>
         <StackPanel>
             <!-- Navigation Buttons -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                <Button Content="Dashboard" Width="100" Command="{Binding NavigateCommand}" CommandParameter="DashboardView"/>
-                <Button Content="Submit Claim" Width="100" Command="{Binding NavigateCommand}" CommandParameter="SubmitClaimView"/>
-                <Button Content="Verify Claims" Width="100" Command="{Binding NavigateCommand}" CommandParameter="VerifyClaimsView"/>
-               
-
+                <Button Content="Dashboard" Width="120" Command="{Binding NavigateCommand}" CommandParameter="DashboardView" 
+                        Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
+                <Button Content="Submit Claim" Width="120" Command="{Binding NavigateCommand}" CommandParameter="SubmitClaimView" 
+                        Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
+                <Button Content="Verify Claims" Width="120" Command="{Binding NavigateCommand}" CommandParameter="VerifyClaimsView" 
+                        Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
             </StackPanel>
 
             <!-- ContentControl to Display Different Views -->
