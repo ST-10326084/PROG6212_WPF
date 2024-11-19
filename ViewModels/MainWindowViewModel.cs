@@ -38,7 +38,12 @@ namespace PROG6212_WPF.ViewModels
                     break;
                 case "VerifyClaimsView":
                     CurrentView = new VerifyClaimsView(); // Instantiate UserControl
-                    break;             
+                    break;
+                case "HRView":
+                    CurrentView = new HRView();
+                    break;
+                default:
+                    throw new ArgumentException("Invalid view name");
             }
         }
 

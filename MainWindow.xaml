@@ -13,6 +13,8 @@
                         Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
                 <Button Content="Verify Claims" Width="120" Command="{Binding NavigateCommand}" CommandParameter="VerifyClaimsView" 
                         Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
+                <Button Content="HR View" Width="120" Command="{Binding NavigateCommand}" CommandParameter="HRView" 
+                        Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
             </StackPanel>
 
             <!-- ContentControl to Display Different Views -->

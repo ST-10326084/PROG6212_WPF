@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="PROG6212_WPF.Views.HRView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="HR Claim Report Generator" FontSize="20" FontWeight="Bold" 
+                   HorizontalAlignment="Center" Margin="0,10" Grid.Row="0" />
+
+        <!-- Form Section -->
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="0,20">
+            <StackPanel Orientation="Horizontal" Margin="0,10">
+                <TextBlock Text="Minimum Hours:" Width="120" VerticalAlignment="Center" />
+                <TextBox Width="200" Text="{Binding MinHours}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,10">
+                <TextBlock Text="Maximum Hours:" Width="120" VerticalAlignment="Center" />
+                <TextBox Width="200" Text="{Binding MaxHours}" />
+            </StackPanel>
+            <Button Content="Generate Report" Width="150" HorizontalAlignment="Center" 
+                    Margin="10" Command="{Binding GenerateReportCommand}" />
+        </StackPanel>
+
+        <!-- Status Section -->
+        <TextBlock Text="{Binding StatusMessage}" FontStyle="Italic" Margin="10" 
+                   Foreground="Green" Grid.Row="2" HorizontalAlignment="Center" />
+    </Grid>
+</UserControl>
