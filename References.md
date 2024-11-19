@@ -1,32 +1,3 @@
-## POE PART 2 PROG6212
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ## Code Help
 
 Krowi (2014). Why RelayCommand. [online] Stack Overflow. Available at: https://stackoverflow.com/questions/22285866/why-relaycommand [Accessed 18 Oct. 2024].
@@ -38,3 +9,4 @@ IamTimCorey (2018). Working With The File System in C# - Managing Folders and Fi
 
 ## Research
 Gartner, I. (2024). Best Insurance Claims Management System Reviews 2024 | Gartner Peer Insights. [online] Gartner. Available at: https://www.gartner.com/reviews/market/insurance-claims-management-system [Accessed 18 Oct. 2024].
+
