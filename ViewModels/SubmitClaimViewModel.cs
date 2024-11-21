@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32; // Include this for file dialog
+using Microsoft.Win32; // For file dialog
 using PROG6212_WPF.Commands;
 
 namespace PROG6212_WPF.ViewModels
@@ -11,12 +12,12 @@ namespace PROG6212_WPF.ViewModels
     public class SubmitClaimViewModel : INotifyPropertyChanged
     {
         private int _hoursWorked;
-        private decimal _hourlyRate;
         private string _additionalNotes;
         private string _documentPath;
+        private decimal _selectedHourlyRate;
 
-        // for unit testing
-        public decimal totalAmount { get; private set; } 
+        // For unit testing
+        public decimal TotalAmount { get; private set; }
 
         public int HoursWorked
         {
@@ -28,13 +29,13 @@ namespace PROG6212_WPF.ViewModels
             }
         }
 
-        public decimal HourlyRate
+        public decimal SelectedHourlyRate
         {
-            get => _hourlyRate;
+            get => _selectedHourlyRate;
             set
             {
-                _hourlyRate = value;
-                OnPropertyChanged(nameof(HourlyRate));
+                _selectedHourlyRate = value;
+                OnPropertyChanged(nameof(SelectedHourlyRate));
             }
         }
 
@@ -58,6 +59,11 @@ namespace PROG6212_WPF.ViewModels
             }
         }
 
+        public ObservableCollection<decimal> HourlyRateOptions { get; } = new ObservableCollection<decimal>
+        {
+            20m, 40m, 50m, 75m, 100m, 125m
+        };
+
         public ICommand SubmitClaimCommand { get; }
         public ICommand UploadDocumentCommand { get; }
 
@@ -69,28 +75,32 @@ namespace PROG6212_WPF.ViewModels
 
         public void SubmitClaim(object parameter)
         {
-            // Logic to submit the claim
-            totalAmount = HoursWorked * HourlyRate;
+            if (HoursWorked <= 0 || SelectedHourlyRate <= 0)
+            {
+                MessageBox.Show("Please ensure all fields are correctly filled before submitting.");
+                return;
+            }
 
-            MessageBox.Show($"Claim submitted with Total Amount: {totalAmount:C}. Notes: {AdditionalNotes}");
+            // Calculate total amount
+            TotalAmount = HoursWorked * SelectedHourlyRate;
+
+            MessageBox.Show($"Claim submitted with Total Amount: {TotalAmount:C}. Notes: {AdditionalNotes}");
 
             // Save claim to the text file with status as "Pending"
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
-            int newId = GetNextClaimId(filePath); // Get new ID for the claim
-
-            //string status = string.IsNullOrEmpty(DocumentPath) ? "Pending" : DocumentPath;
+            int newId = GetNextClaimId(filePath);
 
             // Append new claim data to the file
             using (StreamWriter sw = File.AppendText(filePath))
             {
-                sw.WriteLine($"{newId},{HoursWorked},{HourlyRate},{AdditionalNotes},{DocumentPath},{"Pending"}");
+                sw.WriteLine($"{newId},{HoursWorked},{SelectedHourlyRate},{AdditionalNotes},{DocumentPath},Pending");
             }
 
             // Reset fields after submission
             HoursWorked = 0;
-            HourlyRate = 0;
+            SelectedHourlyRate = 0;
             AdditionalNotes = string.Empty;
-            DocumentPath = string.Empty; // Reset document path
+            DocumentPath = string.Empty;
         }
 
         public int GetNextClaimId(string filePath)
@@ -98,8 +108,8 @@ namespace PROG6212_WPF.ViewModels
             if (File.Exists(filePath))
             {
                 var lines = File.ReadAllLines(filePath);
-                var submittedClaims = lines.SkipWhile(line => !line.StartsWith("# Submitted Claims")).Skip(1);
-                var lastId = submittedClaims.LastOrDefault()?.Split(',')[0];
+                var lastLine = lines.LastOrDefault();
+                var lastId = lastLine?.Split(',')[0];
 
                 return lastId == null ? 1 : int.Parse(lastId) + 1;
             }
