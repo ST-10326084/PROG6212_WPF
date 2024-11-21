@@ -20,12 +20,19 @@
             </ListView>
         </Border>
 
-        <!-- Approve and Reject Buttons -->
+        <!-- Approve, Reject, Auto Verify, and Reset Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,10">
             <Button Content="Approve" Width="120" Margin="10" Command="{Binding ApproveClaimCommand}" 
                     Background="#28A745" Foreground="White" Padding="8"/>
             <Button Content="Reject" Width="120" Margin="10" Command="{Binding RejectClaimCommand}" 
                     Background="#DC3545" Foreground="White" Padding="8"/>
+            <Button Content="Auto Verify" Width="120" Margin="10" Command="{Binding AutoVerifyCommand}"
+                    Background="#007BFF" Foreground="White" Padding="8"/>
+            <!-- Auto Verify Button -->
+            <Button Content="Reset All to Pending" Width="160" Margin="10" Command="{Binding ResetClaimsCommand}" 
+                    Background="#6C757D" Foreground="White" Padding="8"/>
+            <!-- Reset All Button -->
         </StackPanel>
     </StackPanel>
 </UserControl>
+

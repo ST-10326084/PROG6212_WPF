@@ -5,9 +5,25 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using PROG6212_WPF.Commands;
+using PROG6212_WPF.Commands;
+using System;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Windows.Input;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using Microsoft.Win32; // Include this for file dialog
+using PROG6212_WPF.Commands;
+
 
 namespace PROG6212_WPF.ViewModels
 {
+   
+
     public class Claim
     {
         public int ClaimId { get; set; }
@@ -20,6 +36,8 @@ namespace PROG6212_WPF.ViewModels
 
     public class VerifyClaimsViewModel : INotifyPropertyChanged
     {
+        public ICommand AutoVerifyCommand { get; }
+        public ICommand ResetClaimsCommand { get; }
         public ObservableCollection<Claim> PendingClaims { get; set; }
         private Claim _selectedClaim;
 
@@ -41,8 +59,20 @@ namespace PROG6212_WPF.ViewModels
             }
         }
 
+        private string _statusMessage;
+        public string StatusMessage
+        {
+            get => _statusMessage;
+            set
+            {
+                _statusMessage = value;
+                OnPropertyChanged(nameof(StatusMessage));
+            }
+        }
+
         public ICommand ApproveClaimCommand { get; }
         public ICommand RejectClaimCommand { get; }
+        
 
         public VerifyClaimsViewModel()
         {
@@ -51,6 +81,8 @@ namespace PROG6212_WPF.ViewModels
 
             ApproveClaimCommand = new RelayCommand(ApproveClaim, CanApproveOrReject);
             RejectClaimCommand = new RelayCommand(RejectClaim, CanApproveOrReject);
+            AutoVerifyCommand = new RelayCommand(AutoVerifyClaims); // New AutoVerifyCommand
+            ResetClaimsCommand = new RelayCommand(ResetAllClaimsToPending); // New ResetClaimsCommand
         }
 
         private void LoadPendingClaims()
@@ -158,5 +190,91 @@ namespace PROG6212_WPF.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        // Automated setup with a click of a button
+        private void AutoVerifyClaims(object parameter)
+        {
+            foreach (var claim in PendingClaims)
+            {
+                // Auto-verify logic
+                if (claim.HoursWorked <= 40 && claim.HourlyRate <= 50)
+                {
+                    claim.Status = "Approved";
+                }
+                else
+                {
+                    claim.Status = "Denied";
+                }
+
+                // Update the status in the file for the current claim
+                UpdateClaimStatusInFile(claim);
+            }
+
+            StatusMessage = "Auto claim verification complete.";
+            OnPropertyChanged(nameof(PendingClaims)); // Refresh the list view to show updated statuses
+            LoadPendingClaims();
+        }
+
+
+        private void ResetAllClaimsToPending(object parameter)
+        {
+            foreach (var claim in PendingClaims)
+            {
+                claim.Status = "Pending"; // Reset status to "Pending"
+            }
+
+            StatusMessage = "All claims have been reset to Pending.";
+            OnPropertyChanged(nameof(PendingClaims)); // Refresh the list
+
+            // After resetting all claims, write the updated statuses back to the file
+            UpdateToPendingInFile();
+            LoadPendingClaims();
+        }
+
+        private void UpdateToPendingInFile()
+        {
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard_data.txt");
+
+            if (File.Exists(filePath))
+            {
+                var lines = File.ReadAllLines(filePath).ToList();
+                bool isClaimsSection = false;
+
+                for (int i = 0; i < lines.Count; i++)
+                {
+                    var line = lines[i];
+                    if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line))
+                        continue;
+
+                    // Identify the start of the claims section
+                    if (line.StartsWith("ID,"))
+                    {
+                        isClaimsSection = true;
+                        continue;
+                    }
+
+                    if (isClaimsSection)
+                    {
+                        var parts = line.Split(',');
+
+                        // Update the status of each claim to "Pending" in the file
+                        if (parts.Length == 6)
+                        {
+                            var claim = PendingClaims.FirstOrDefault(c => c.ClaimId.ToString() == parts[0]);
+                            if (claim != null)
+                            {
+                                // Replace the old status with "Pending"
+                                lines[i] = $"{claim.ClaimId},{claim.HoursWorked},{claim.HourlyRate},{claim.AdditionalNotes},{claim._documentPath},Pending";
+                            }
+                        }
+                    }
+                }
+
+                // Write all updated lines back to the file
+                File.WriteAllLines(filePath, lines);
+            }
+        }
+
+
     }
 }
