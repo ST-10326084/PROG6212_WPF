@@ -7,6 +7,8 @@
         <StackPanel>
             <!-- Navigation Buttons -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                <Button Content="Home" Width="120" Command="{Binding NavigateCommand}" CommandParameter="RoleSelectionView" 
+                        Background="#FF6F61" Foreground="White" Margin="5" Padding="8"/>
                 <Button Content="Dashboard" Width="120" Command="{Binding NavigateCommand}" CommandParameter="DashboardView" 
                         Background="#007ACC" Foreground="White" Margin="5" Padding="8"/>
                 <Button Content="Submit Claim" Width="120" Command="{Binding NavigateCommand}" CommandParameter="SubmitClaimView" 
